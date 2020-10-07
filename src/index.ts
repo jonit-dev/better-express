@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 app.use(cookieSession({
-  keys: ['laskdjf']
+  keys: ['cbbdf3bf8f469ce844b9f1eedeba2523']
 }))
 // ROUTES ========================================
 app.use(loginRouter)
