@@ -23,6 +23,17 @@ router.post('/login', (req: RequestWithBody, res: Response) => {
 
 
   if (email && password) {
+
+
+    // I've just used hardcoded credentials because the purpose of this app is ONLY showing how does TS works together with express.
+    if (email === 'hardcoded@email.com' && password === "123") {
+
+      req.session = { loggedIn: true }
+
+      res.redirect('/')
+    }
+
+
     return res.status(HttpStatusCode.OK).send({
       message: 'Access granted!'
     })
