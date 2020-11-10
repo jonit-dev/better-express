@@ -3,7 +3,6 @@ import "reflect-metadata";
 import bodyParser from "body-parser";
 import { InversifyExpressServer } from "inversify-express-utils";
 
-import { appEnv } from "./config/env";
 import { container } from "./config/inversify";
 
 const server = new InversifyExpressServer(container);
@@ -23,5 +22,4 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
-  console.log(appEnv.general.APP_NAME);
 });
