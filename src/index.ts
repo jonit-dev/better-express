@@ -1,9 +1,9 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 
-import bodyParser from 'body-parser';
-import { InversifyExpressServer } from 'inversify-express-utils';
+import bodyParser from "body-parser";
+import { InversifyExpressServer } from "inversify-express-utils";
 
-import { container } from './config/inversify';
+import { container } from "./config/inversify";
 
 const server = new InversifyExpressServer(container);
 
@@ -16,7 +16,7 @@ server.setConfig((app) => {
   app.use(bodyParser.json());
 });
 
-let app = server.build();
+const app = server.build();
 
 const port = process.env.PORT || 3000;
 

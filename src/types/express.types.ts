@@ -1,9 +1,9 @@
-import { Request } from 'express';
+import { Request } from "express";
 
 export interface RequestWithBody extends Request {
   body: {
-    [key: string]: string | undefined
-  }
+    [key: string]: string | undefined;
+  };
 }
 
 export enum HttpStatusCode {
@@ -16,5 +16,5 @@ export enum HttpStatusCode {
   NotFound = 404,
   UnprocessableEntity = 422,
   MethodNotAllowed = 405,
-  InternalServerError = 500
+  InternalServerError = 500,
 }
