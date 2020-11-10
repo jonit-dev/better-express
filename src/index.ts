@@ -1,23 +1,25 @@
+import 'reflect-metadata'
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
 import express, { Application } from 'express';
+import { InversifyExpressServer } from 'inversify-express-utils';
+import { container } from './config/inversify';
 
 import { loginRouter } from './routes/login.routes';
 
-const app: Application = express();
+const server = new InversifyExpressServer(container)
+
+server.setConfig((app) => {
+  app.use(bodyParser.urlencoded({
+    extended: true
+  }))
+  app.use(bodyParser.json())
+})
+
+let app = server.build();
 
 const port = process.env.PORT || 3000
 
-// Middlewares ========================================
-app.use(bodyParser.urlencoded({
-  extended: true
-}))
-app.use(cookieSession({
-  keys: ['cbbdf3bf8f469ce844b9f1eedeba2523']
-}))
-// ROUTES ========================================
-app.use(loginRouter)
-
-app.listen(port, () => {
-  console.log(`App listening to port ${port}!!`);
-})
+ app.listen(port, () => {
+   console.log(`Server listening on port ${port}`)
+ })
