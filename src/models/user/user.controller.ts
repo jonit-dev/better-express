@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { inject } from "inversify";
-import { controller, httpGet, httpPost, interfaces } from "inversify-express-utils";
+import { controller, httpGet, httpPost, interfaces, requestBody } from "inversify-express-utils";
 
+import { DTOValidator } from "../../middlewares/validator.middleware";
+import { UserCreateDTO } from "./user.dto";
 import { IUser } from "./user.model";
 import { UserService } from "./user.service";
 
@@ -14,8 +16,13 @@ export class UserController implements interfaces.Controller {
     return this.userService.getUsers();
   }
 
-  @httpPost("/")
-  private async createUser(req: Request, res: Response): Promise<IUser> {
-    return await this.userService.createUser();
+  @httpPost("/", DTOValidator(UserCreateDTO))
+  private async createUser(
+    @requestBody() body,
+    req: Request,
+    res: Response
+  ): Promise<any> {
+    return "something";
+    // return await this.userService.createUser();
   }
 }

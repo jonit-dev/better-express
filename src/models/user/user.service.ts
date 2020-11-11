@@ -1,17 +1,16 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 
-import { IUser, User } from "./user.model";
+import { IUser } from "./user.model";
+import { UserRepository } from "./user.repository";
 
 @injectable()
 export class UserService {
-  public async createUser(): Promise<IUser> {
-    const user = new User({
-      name: "Joao",
-      email: "test@gmail.com",
-    } as IUser);
-    await user.save();
+  constructor(
+    @inject("UserRepository") private userRepository: UserRepository
+  ) {}
 
-    return user;
+  public async createUser(): Promise<IUser> {
+    return this.userRepository.create();
   }
 
   public getUsers(): IUser[] {
