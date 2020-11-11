@@ -21,8 +21,7 @@ export class UserController implements interfaces.Controller {
     @requestBody() body,
     req: Request,
     res: Response
-  ): Promise<any> {
-    return "something";
-    // return await this.userService.createUser();
+  ): Promise<IUser> {
+    return await this.userService.createUser(body);
   }
 }

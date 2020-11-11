@@ -1,5 +1,6 @@
 import { inject, injectable } from "inversify";
 
+import { UserCreateDTO } from "./user.dto";
 import { IUser } from "./user.model";
 import { UserRepository } from "./user.repository";
 
@@ -9,8 +10,8 @@ export class UserService {
     @inject("UserRepository") private userRepository: UserRepository
   ) {}
 
-  public async createUser(): Promise<IUser> {
-    return this.userRepository.create();
+  public async createUser(userCreateDTO: UserCreateDTO): Promise<IUser> {
+    return this.userRepository.create(userCreateDTO);
   }
 
   public getUsers(): IUser[] {
