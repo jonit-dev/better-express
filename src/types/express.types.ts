@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-export interface RequestWithBody extends Request {
+export interface IRequestWithBody extends Request {
   body: {
     [key: string]: string | undefined;
   };
