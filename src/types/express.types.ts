@@ -17,4 +17,5 @@ export enum HttpStatusCode {
   UnprocessableEntity = 422,
   MethodNotAllowed = 405,
   InternalServerError = 500,
+  Conflict = 409,
 }

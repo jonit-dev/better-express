@@ -18,10 +18,10 @@ export class UserController implements interfaces.Controller {
 
   @httpPost("/", DTOValidator(UserCreateDTO))
   private async createUser(
-    @requestBody() body,
+    @requestBody() userCreateDto,
     req: Request,
     res: Response
   ): Promise<IUser> {
-    return await this.userService.createUser(body);
+    return await this.userService.createUser(res, userCreateDto);
   }
 }

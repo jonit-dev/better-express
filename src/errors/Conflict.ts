@@ -1,10 +1,10 @@
 import { HttpStatusCode } from "../types/express.types";
 import { ApplicationError } from "./ApplicationError";
 
-export class BadRequest extends ApplicationError {
+export class Conflict extends ApplicationError {
   constructor(message) {
-    super(message, HttpStatusCode.BadRequest);
+    super(message, HttpStatusCode.Conflict);
 
-    this.error = BadRequest.name;
+    this.error = Conflict.name;
   }
 }

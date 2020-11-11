@@ -5,6 +5,7 @@ import { InversifyExpressServer } from "inversify-express-utils";
 
 import { container } from "./config/inversify";
 import { MongoDBHelper } from "./libs/MongoDBHelper";
+import { errorHandler } from "./middlewares/errorHandler.midleware";
 
 const server = new InversifyExpressServer(container);
 
@@ -25,3 +26,5 @@ app.listen(port, async () => {
   await MongoDBHelper.init(); // Initialize mongodb
   console.log(`Server listening on port ${port}`);
 });
+
+app.use(errorHandler); // global error handling middleware must be the last one in order
