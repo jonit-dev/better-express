@@ -1,10 +1,20 @@
 import { injectable } from "inversify";
 
-import { IUser } from "../../types/user.types";
+import { IUser, User } from "./user.model";
 
 @injectable()
 export class UserService {
+  public async createUser(): Promise<IUser> {
+    const user = new User({
+      name: "Joao",
+      email: "test@gmail.com",
+    } as IUser);
+    await user.save();
+
+    return user;
+  }
+
   public getUsers(): IUser[] {
-    return [{ id: 1, name: "John" }];
+    return [];
   }
 }

@@ -21,8 +21,7 @@ const app = server.build();
 
 const port = process.env.PORT || 3000;
 
-MongoDBHelper.init(); // Initialize mongodb
-
-app.listen(port, () => {
+app.listen(port, async () => {
+  await MongoDBHelper.init(); // Initialize mongodb
   console.log(`Server listening on port ${port}`);
 });

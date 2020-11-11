@@ -9,7 +9,7 @@ services:
       - "$SERVER_PORT:$SERVER_PORT"
     volumes:
       - .:/usr/src/app
-      - node_modules:/usr/src/app/node_modules
+      - /usr/src/app/node_modules
     links:
       - app-db
     depends_on:
@@ -20,7 +20,6 @@ services:
     container_name: app-db
     image: mongo
     volumes:
-      - dbdata:/data/db
       - ./docker_scripts/:/docker-entrypoint-initdb.d
     ports:
       - "$MONGO_PORT:$MONGO_PORT"
@@ -35,7 +34,3 @@ services:
 networks:
   app-network:
     driver: bridge
-
-volumes:
-  dbdata:
-  node_modules:
