@@ -1,35 +1,4 @@
-import { Response } from "express";
-import { inject, injectable } from "inversify";
-
-import { ConflictError } from "../../errors/ConflictError";
-import { UserCreateDTO } from "./user.dto";
-import { IUser, User } from "./user.model";
-import { UserRepository } from "./user.repository";
+import { injectable } from 'inversify';
 
 @injectable()
-export class UserService {
-  constructor(
-    @inject("UserRepository") private userRepository: UserRepository
-  ) {}
-
-  public async createUser(
-    res: Response,
-    userCreateDTO: UserCreateDTO
-  ): Promise<IUser> {
-    const { email } = userCreateDTO;
-    // check if user already exist
-    const foundUser = await User.findOne({ email });
-
-    if (foundUser) {
-      throw new ConflictError(
-        "User already exists: This e-mail is already registered"
-      );
-    }
-
-    return this.userRepository.create(userCreateDTO);
-  }
-
-  public getUsers(): IUser[] {
-    return [];
-  }
-}
+export class UserService {}

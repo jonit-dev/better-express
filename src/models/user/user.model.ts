@@ -3,12 +3,13 @@ import { createSchema, ExtractDoc, Type, typedModel } from 'ts-mongoose';
 
 const userSchema = createSchema(
   {
-    name: Type.string({ required: true }),
+    name: Type.string(),
     email: Type.string({ required: true }),
     password: Type.string(),
 
     ...({} as {
       isValidPassword: (password: string) => Promise<boolean>;
+      checkIfExists: (id: number) => Promise<boolean>;
     }),
   },
   { timestamps: { createdAt: true, updatedAt: true } }
@@ -33,4 +34,14 @@ userSchema.methods.isValidPassword = async function (
   return compare;
 };
 
-export const User = typedModel('User', userSchema);
+export const User = typedModel('User', userSchema, undefined, undefined, {
+  checkIfExists: async (email: string): Promise<boolean> => {
+    const exists = await User.findOne({ email });
+
+    if (exists) {
+      return true;
+    }
+
+    return false;
+  },
+});

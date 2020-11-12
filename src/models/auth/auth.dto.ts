@@ -1,6 +1,6 @@
-import { IsDefined, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import { IsDefined, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class UserCreateDTO {
+export class AuthSignUpDTO {
   @IsDefined()
   @IsNotEmpty()
   @IsString()
@@ -20,5 +20,13 @@ export class UserCreateDTO {
   @IsString()
   @MinLength(3)
   @MaxLength(50)
+  password: string;
+}
+
+export class AuthLoginDTO {
+  @IsDefined()
+  email: string;
+
+  @IsDefined()
   password: string;
 }

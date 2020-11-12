@@ -17,6 +17,7 @@
     "no-unused-vars": "off",
     "no-trailing-spaces": "off",
     "no-multiple-empty-lines": "off",
+    "no-unused-expressions": "off",
     "padded-blocks": "off",
     "object-curly-spacing": "off",
     "space-before-function-paren": "off",

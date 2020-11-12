@@ -4,7 +4,6 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import morgan from 'morgan';
-import passport from 'passport';
 
 import { container } from './config/inversify';
 import { MongoDBHelper } from './libs/MongoDBHelper';
@@ -22,7 +21,6 @@ server.setConfig((app) => {
   app.use('*', cors());
   app.use(bodyParser.json());
   app.use(morgan('dev'));
-  app.use(passport.initialize);
 
   AuthMiddleware.initStrategies(); // initialize passportjs auth strategies
 });
