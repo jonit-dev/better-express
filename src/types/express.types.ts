@@ -22,3 +22,12 @@ export enum HttpStatusCode {
   InternalServerError = 500,
   Conflict = 409,
 }
+
+export interface IServerBootstrapVars {
+  appName: string;
+  timezone: string;
+  adminEmail: string;
+  language: string;
+  phoneLocale: string;
+  port: string | number;
+}

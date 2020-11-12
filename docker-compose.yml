@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   app-api:
     container_name: app-api
@@ -6,10 +6,12 @@ services:
     build: .
     env_file: .env
     ports:
-      - "$SERVER_PORT:$SERVER_PORT"
+      - '$SERVER_PORT:$SERVER_PORT'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    environment:
+      FORCE_COLOR: 'true'
     links:
       - app-db
     depends_on:
@@ -22,7 +24,7 @@ services:
     volumes:
       - ./docker_scripts/:/docker-entrypoint-initdb.d
     ports:
-      - "$MONGO_PORT:$MONGO_PORT"
+      - '$MONGO_PORT:$MONGO_PORT'
     environment:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
       MONGO_PORT: ${MONGO_PORT}
