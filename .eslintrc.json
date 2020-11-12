@@ -12,7 +12,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "semi": ["warn", "always"],
-    "quotes": ["warn", "double", { "avoidEscape": true }],
+    "quotes": ["warn", "single", { "avoidEscape": true }],
     "comma-dangle": "off",
     "no-unused-vars": "off",
     "no-trailing-spaces": "off",

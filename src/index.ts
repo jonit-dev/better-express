@@ -1,13 +1,14 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 
-import bodyParser from "body-parser";
-import { InversifyExpressServer } from "inversify-express-utils";
-import morgan from "morgan";
+import bodyParser from 'body-parser';
+import { InversifyExpressServer } from 'inversify-express-utils';
+import morgan from 'morgan';
+import passport from 'passport';
 
-import { container } from "./config/inversify";
-import { MongoDBHelper } from "./libs/MongoDBHelper";
-import { AuthMiddleware } from "./middlewares/auth.middleware";
-import { errorHandler } from "./middlewares/errorHandler.midleware";
+import { container } from './config/inversify';
+import { MongoDBHelper } from './libs/MongoDBHelper';
+import { AuthMiddleware } from './middlewares/auth.middleware';
+import { errorHandler } from './middlewares/errorHandler.midleware';
 
 const server = new InversifyExpressServer(container);
 
@@ -18,7 +19,8 @@ server.setConfig((app) => {
     })
   );
   app.use(bodyParser.json());
-  app.use(morgan("combined"));
+  app.use(morgan("dev"));
+  app.use(passport.initialize);
 
   AuthMiddleware.initStrategies(); // initialize passportjs auth strategies
 });

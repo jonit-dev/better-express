@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-import { appEnv } from "../config/env";
+import { appEnv } from '../config/env';
 
 export class MongoDBHelper {
   public static async init(): Promise<void> {
@@ -15,7 +15,7 @@ export class MongoDBHelper {
         },
         (err) => {
           if (err) {
-            console.log("Error while connecting to MongoDB!");
+            console.log('Error while connecting to MongoDB!');
             console.log(err);
             return;
           }
