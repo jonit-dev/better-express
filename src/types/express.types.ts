@@ -1,9 +1,12 @@
 import { Request } from 'express';
 
-export interface IRequestWithBody extends Request {
+import { IUser } from '../models/user/user.model';
+
+export interface IRequestCustom extends Request {
   body: {
     [key: string]: string | undefined;
   };
+  user?: IUser;
 }
 
 export enum HttpStatusCode {

@@ -21,6 +21,7 @@ export const appEnv = {
   authentication: {
     PASSPORT_DEFAULT_STRATEGY: process.env.PASSPORT_DEFAULT_STRATEGY,
     JWT_SECRET: process.env.JWT_SECRET,
+    REFRESH_TOKEN_SECRET: process.env.JWT_REFRESH_TOKEN_SECRET,
     googleOAuth: {
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
       GOOGLE_SECRET: process.env.GOOGLE_SECRET,

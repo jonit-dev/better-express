@@ -30,3 +30,8 @@ export class AuthLoginDTO {
   @IsDefined()
   password: string;
 }
+
+export class AuthRefreshTokenDTO {
+  @IsDefined()
+  refreshToken: string;
+}

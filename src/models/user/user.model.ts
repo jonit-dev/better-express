@@ -6,6 +6,9 @@ const userSchema = createSchema(
     name: Type.string(),
     email: Type.string({ required: true }),
     password: Type.string(),
+    refreshTokens: Type.array().of({
+      token: Type.string(),
+    }),
 
     ...({} as {
       isValidPassword: (password: string) => Promise<boolean>;
@@ -36,6 +39,7 @@ userSchema.methods.isValidPassword = async function (
 export type IUser = ExtractDoc<typeof userSchema>;
 
 export const User = typedModel('User', userSchema, undefined, undefined, {
+  // Static methods ========================================
   checkIfExists: async (email: string): Promise<boolean> => {
     const exists = await User.findOne({ email });
 

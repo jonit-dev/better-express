@@ -6,6 +6,7 @@ import { ConflictError } from '../../errors/ConflictError';
 import { NotFoundError } from '../../errors/NotFoundError';
 import { IUser, User } from '../user/user.model';
 import { AuthLoginDTO, AuthSignUpDTO } from './auth.dto';
+import { IAuthResponse } from './auth.types';
 
 @injectable()
 export class AuthService {
@@ -32,7 +33,7 @@ export class AuthService {
     return newUser;
   }
 
-  public async login(authLoginDTO: AuthLoginDTO): Promise<string> {
+  public async login(authLoginDTO: AuthLoginDTO): Promise<IAuthResponse> {
     const { email, password } = authLoginDTO;
 
     // try to find an user using these credentials
@@ -42,13 +43,37 @@ export class AuthService {
       throw new NotFoundError('Invalid credentials. Please, try again!');
     }
 
-    // else, if we got an user with these credentials,
+    // else, if we got an user with these credentials, lets generate an accessToken
 
     const accessToken = jwt.sign(
       { _id: user._id, email: user.email },
-      appEnv.authentication.JWT_SECRET
+      appEnv.authentication.JWT_SECRET,
+      { expiresIn: '20m' }
+    );
+    const refreshToken = jwt.sign(
+      { _id: user._id, email: user.email },
+      appEnv.authentication.REFRESH_TOKEN_SECRET
     );
 
-    return accessToken;
+    user.refreshTokens = [...user.refreshTokens, { token: refreshToken }];
+
+    await user.save();
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  public async logout(user: IUser, refreshToken: string): Promise<void> {
+    //! Remember that JWT tokens are stateless, so there's nothing on server side to remove besides our refresh tokens. Make sure that you wipe out all JWT data from the client. Read more at: https://stackoverflow.com/questions/37959945/how-to-destroy-jwt-tokens-on-logout#:~:text=You%20cannot%20manually%20expire%20a,DB%20query%20on%20every%20request.
+
+    // remove refresh token from Db
+
+    user.refreshTokens = user.refreshTokens?.filter(
+      (item) => item.token !== refreshToken
+    );
+
+    await user.save();
   }
 }

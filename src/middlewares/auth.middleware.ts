@@ -3,19 +3,23 @@ import jwt from 'jsonwebtoken';
 import { appEnv } from '../config/env';
 import { ForbiddenError } from '../errors/ForbiddenError';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
+import { User } from '../models/user/user.model';
+import { IRequestCustom } from '../types/express.types';
 
-export const AuthRoute = (req, res, next): void => {
+export const AuthRoute = (req: IRequestCustom, res, next): void => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    jwt.verify(token, appEnv.authentication.JWT_SECRET, (err, user) => {
+    jwt.verify(token, appEnv.authentication.JWT_SECRET, async (err, user) => {
       if (err) {
         throw new ForbiddenError('Please, login to access this resource.');
       }
 
-      req.user = user;
+      const dbUser = await User.findOne({ email: user.email });
+
+      if (dbUser) req.user = dbUser;
       next();
     });
   } else {
