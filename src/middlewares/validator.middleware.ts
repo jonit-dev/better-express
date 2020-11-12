@@ -11,7 +11,6 @@ export const DTOValidator = (dtoClass: any) => {
 
     validate(output, { skipMissingProperties: true }).then(
       (errors: IValidationError[]) => {
-        console.log(errors);
         // errors is an array of validation errors
         if (errors.length > 0) {
           const errorList: string[] = [];
@@ -26,7 +25,6 @@ export const DTOValidator = (dtoClass: any) => {
               errorList.push(item.value);
             }
           }
-          console.log("DTO VALIDATION ERROR!");
           return res.send(new BadRequest(errorList));
         } else {
           res.locals.input = output;
