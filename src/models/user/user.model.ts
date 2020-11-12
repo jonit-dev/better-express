@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { createSchema, ExtractDoc, Type, typedModel } from 'ts-mongoose';
 
+const mongooseHidden = require('mongoose-hidden')();
 const userSchema = createSchema(
   {
     name: Type.string(),
@@ -17,6 +18,16 @@ const userSchema = createSchema(
   },
   { timestamps: { createdAt: true, updatedAt: true } }
 );
+
+//  Hidden fields (not exposed through API responses)
+userSchema.plugin(mongooseHidden, {
+  hidden: {
+    password: true,
+    refreshTokens: true,
+    createdAt: true,
+    updatedAt: true,
+  },
+});
 
 userSchema.pre('save', async function (next): Promise<void> {
   const user: any = this;
