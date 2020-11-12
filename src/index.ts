@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import morgan from 'morgan';
 import passport from 'passport';
@@ -18,8 +19,9 @@ server.setConfig((app) => {
       extended: true,
     })
   );
+  app.use('*', cors());
   app.use(bodyParser.json());
-  app.use(morgan("dev"));
+  app.use(morgan('dev'));
   app.use(passport.initialize);
 
   AuthMiddleware.initStrategies(); // initialize passportjs auth strategies
