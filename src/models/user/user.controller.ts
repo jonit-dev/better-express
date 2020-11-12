@@ -1,16 +1,16 @@
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, interfaces } from 'inversify-express-utils';
-import passport from 'passport';
 
+import { AuthRoute } from '../../middlewares/auth.middleware';
 import { IUser } from './user.model';
 import { UserService } from './user.service';
 
-@controller('/users')
+@controller('/users', AuthRoute)
 export class UserController implements interfaces.Controller {
   constructor(@inject('UserService') private userService: UserService) {}
 
-  @httpGet('/', passport.authenticate('jwt', { session: false }))
+  @httpGet('/')
   private getUsers(req: Request, res: Response): IUser[] {
     return [];
   }

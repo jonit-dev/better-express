@@ -19,6 +19,8 @@
     "no-multiple-empty-lines": "off",
     "no-unused-expressions": "off",
     "padded-blocks": "off",
+    "keyword-spacing": "off",
+    "no-empty": "off",
     "object-curly-spacing": "off",
     "space-before-function-paren": "off",
     "no-useless-constructor": "off",

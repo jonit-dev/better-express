@@ -1,26 +1,35 @@
+import { Request, Response } from 'express';
 import { inject } from 'inversify';
-import { controller, httpPost, interfaces } from 'inversify-express-utils';
-import passport from 'passport';
+import { controller, httpPost, interfaces, requestBody } from 'inversify-express-utils';
 
-import { AuthMiddleware } from '../../middlewares/auth.middleware';
 import { DTOValidator } from '../../middlewares/validator.middleware';
-import { IUser } from '../user/user.model';
 import { AuthLoginDTO, AuthSignUpDTO } from './auth.dto';
 import { AuthService } from './auth.service';
+import { IAuthResponse } from './auth.types';
 
 @controller('/auth')
 export class AuthController implements interfaces.Controller {
   constructor(@inject('AuthService') private authService: AuthService) {}
 
-  @httpPost(
-    '/signup',
-    DTOValidator(AuthSignUpDTO),
-    passport.authenticate('signup', { session: false })
-  )
-  public async signUp(req, res, next): Promise<IUser> {
-    return req.user;
+  @httpPost('/signup', DTOValidator(AuthSignUpDTO))
+  public async signUp(
+    @requestBody() authSignUpDTO,
+    req: Request,
+    res: Response
+  ): Promise<any> {
+    return this.authService.signUp(authSignUpDTO);
   }
 
-  @httpPost('/login', DTOValidator(AuthLoginDTO), AuthMiddleware.login)
-  public async login(): Promise<any> {}
+  @httpPost('/login', DTOValidator(AuthLoginDTO))
+  public async login(
+    @requestBody() authLoginDTO,
+    req: Request,
+    res: Response
+  ): Promise<IAuthResponse> {
+    const accessToken = await this.authService.login(authLoginDTO);
+
+    return {
+      accessToken,
+    };
+  }
 }

@@ -14,11 +14,10 @@ const userSchema = createSchema(
   },
   { timestamps: { createdAt: true, updatedAt: true } }
 );
-export type IUser = ExtractDoc<typeof userSchema>;
 
 userSchema.pre('save', async function (next): Promise<void> {
   const user: any = this;
-  if (user) {
+  if (user && user.isModified('password')) {
     const hash = await bcrypt.hash(user.password, 10);
     user.password = hash;
     next();
@@ -34,12 +33,23 @@ userSchema.methods.isValidPassword = async function (
   return compare;
 };
 
+export type IUser = ExtractDoc<typeof userSchema>;
+
 export const User = typedModel('User', userSchema, undefined, undefined, {
   checkIfExists: async (email: string): Promise<boolean> => {
     const exists = await User.findOne({ email });
 
     if (exists) {
       return true;
+    }
+
+    return false;
+  },
+  findByCredentials: async (email: string, password: string) => {
+    const user = await User.findOne({ email });
+
+    if (await user?.isValidPassword(password)) {
+      return user;
     }
 
     return false;
