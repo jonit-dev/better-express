@@ -64,6 +64,27 @@ export class AuthMiddleware {
         }
       )
     );
+
+    const JwtStrategy = require('passport-jwt').Strategy;
+    const ExtractJwt = require('passport-jwt').ExtractJwt;
+
+    passport.use(
+      new JwtStrategy(
+        {
+          secretOrKey: process.env.JWT_SECRET,
+          jwtFromRequest: ExtractJwt.fromUrlQueryParameter('secret_token'),
+        },
+        async (token, done) => {
+          try {
+            return done(null, token.user);
+          } catch (error) {
+            throw new UnauthorizedError(
+              'Please, login to access this resource.'
+            );
+          }
+        }
+      )
+    );
   }
 
   public static login = (req, res, next): any => {
@@ -74,7 +95,9 @@ export class AuthMiddleware {
         }
 
         req.login(user, { session: false }, async (error) => {
-          if (error) return next(error);
+          if (error) {
+            return next(error);
+          }
 
           // compose JWT payload, and sign token
           const body = { _id: user._id, email: user.email };

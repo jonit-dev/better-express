@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, interfaces } from 'inversify-express-utils';
+import passport from 'passport';
 
 import { IUser } from './user.model';
 import { UserService } from './user.service';
@@ -9,7 +10,7 @@ import { UserService } from './user.service';
 export class UserController implements interfaces.Controller {
   constructor(@inject('UserService') private userService: UserService) {}
 
-  @httpGet('/')
+  @httpGet('/', passport.authenticate('jwt', { session: false }))
   private getUsers(req: Request, res: Response): IUser[] {
     return [];
   }
