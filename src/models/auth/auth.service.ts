@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import jwt from 'jsonwebtoken';
 
 import { appEnv } from '../../config/env';
@@ -9,12 +9,17 @@ import { NotFoundError } from '../../errors/NotFoundError';
 import { UnauthorizedError } from '../../errors/UnauthorizedError';
 import { IUser, User } from '../user/user.model';
 import { AuthLoginDTO, AuthSignUpDTO } from './auth.dto';
+import { AuthRepository } from './auth.repository';
 import { IAuthResponse } from './auth.types';
 
 @injectable()
 export class AuthService {
+  constructor(
+    @inject('AuthRepository') private authRepository: AuthRepository
+  ) {}
+
   public async signUp(authSignUpDTO: AuthSignUpDTO): Promise<IUser> {
-    const { email, password, name } = authSignUpDTO;
+    const { email } = authSignUpDTO;
 
     // first, check if an user with the same e-mail already exists
     if (await User.checkIfExists(email)) {
@@ -22,18 +27,7 @@ export class AuthService {
         `An user with this e-mail (${email}) already exists! Please, try again with a different one.`
       );
     }
-
-    // if it doesnt exists, lets create it
-
-    const newUser = new User({
-      name,
-      email,
-      password,
-    });
-
-    await newUser.save();
-
-    return newUser;
+    return this.authRepository.signUp(authSignUpDTO);
   }
 
   public async login(authLoginDTO: AuthLoginDTO): Promise<IAuthResponse> {

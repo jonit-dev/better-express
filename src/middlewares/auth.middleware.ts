@@ -12,16 +12,20 @@ export const AuthRoute = (req: IRequestCustom, res, next): void => {
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    jwt.verify(token, appEnv.authentication.JWT_SECRET, async (err, user) => {
-      if (err) {
-        throw new ForbiddenError('Please, login to access this resource.');
+    return jwt.verify(
+      token,
+      appEnv.authentication.JWT_SECRET,
+      async (err, user) => {
+        if (err) {
+          throw new ForbiddenError('Please, login to access this resource.');
+        }
+
+        const dbUser = await User.findOne({ email: user.email });
+
+        if (dbUser) req.user = dbUser;
+        next();
       }
-
-      const dbUser = await User.findOne({ email: user.email });
-
-      if (dbUser) req.user = dbUser;
-      next();
-    });
+    );
   } else {
     throw new UnauthorizedError(
       "Sorry, you're not allowed to access this resource."

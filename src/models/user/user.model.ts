@@ -7,6 +7,7 @@ const userSchema = createSchema(
     name: Type.string(),
     email: Type.string({ required: true }),
     password: Type.string(),
+    salt: Type.string(),
     refreshTokens: Type.array().of({
       token: Type.string(),
     }),

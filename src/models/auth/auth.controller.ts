@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpPost, interfaces, requestBody } from 'inversify-express-utils';
 
@@ -15,11 +15,7 @@ export class AuthController implements interfaces.Controller {
   constructor(@inject('AuthService') private authService: AuthService) {}
 
   @httpPost('/signup', DTOValidator(AuthSignUpDTO))
-  public async signUp(
-    @requestBody() authSignUpDTO,
-    req: Request,
-    res: Response
-  ): Promise<any> {
+  public async signUp(@requestBody() authSignUpDTO): Promise<any> {
     return this.authService.signUp(authSignUpDTO);
   }
 
@@ -55,6 +51,7 @@ export class AuthController implements interfaces.Controller {
     req: IRequestCustom,
     res
   ): Promise<IAuthRefreshTokenResponse> {
+    // These variables will always be defined, since we have the DTO validation that happens before the code below.
     const refreshToken = req.body.refreshToken!;
     const user = req.user!;
 
