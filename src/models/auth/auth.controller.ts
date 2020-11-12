@@ -1,15 +1,11 @@
 import { Request, Response } from 'express';
 import { inject } from 'inversify';
 import { controller, httpPost, interfaces, requestBody } from 'inversify-express-utils';
-import jwt from 'jsonwebtoken';
 
-import { appEnv } from '../../config/env';
-import { ForbiddenError } from '../../errors/ForbiddenError';
-import { UnauthorizedError } from '../../errors/UnauthorizedError';
+import { InternalServerError } from '../../errors/InternalServerError';
 import { AuthRoute } from '../../middlewares/auth.middleware';
 import { DTOValidator } from '../../middlewares/validator.middleware';
 import { HttpStatusCode, IRequestCustom } from '../../types/express.types';
-import { IUser } from '../user/user.model';
 import { AuthLoginDTO, AuthRefreshTokenDTO, AuthSignUpDTO } from './auth.dto';
 import { AuthService } from './auth.service';
 import { IAuthRefreshTokenResponse, IAuthResponse } from './auth.types';
@@ -46,11 +42,8 @@ export class AuthController implements interfaces.Controller {
     res: Response
   ): Promise<any> {
     const { refreshToken } = authRefreshTokenDTO;
-    const { user } = req;
 
-    if (!user) {
-      throw new UnauthorizedError('You cannot access this route');
-    }
+    const user = req.user!;
 
     this.authService.logout(user, refreshToken);
 
@@ -60,47 +53,21 @@ export class AuthController implements interfaces.Controller {
   @httpPost('/refresh-token', DTOValidator(AuthRefreshTokenDTO), AuthRoute)
   public async refreshToken(
     req: IRequestCustom,
-    res: Response
-  ): Promise<IAuthRefreshTokenResponse | void> {
-    const { refreshToken } = req.body;
+    res
+  ): Promise<IAuthRefreshTokenResponse> {
+    const refreshToken = req.body.refreshToken!;
+    const user = req.user!;
 
-    const { user } = req;
+    const accessToken = await this.authService.refreshToken(user, refreshToken);
 
-    if (!user) {
-      throw new UnauthorizedError('You cannot access this route.');
-    }
-
-    if (!refreshToken) {
-      throw new UnauthorizedError(
-        "You're not allowed to access this resource!"
+    if (!accessToken) {
+      throw new InternalServerError(
+        'Error while trying to generate your access token!'
       );
     }
 
-    console.log(user);
-
-    if (!user.refreshTokens!.find((item) => item.token === refreshToken)) {
-      throw new ForbiddenError('Error: Your refreshToken is invalid');
-    }
-
-    jwt.verify(
-      refreshToken,
-      appEnv.authentication.REFRESH_TOKEN_SECRET,
-      (err, user: IUser) => {
-        if (err) {
-          throw new ForbiddenError('Error: Your refreshToken is invalid');
-        }
-
-        // provide a new accessToken to the user
-        const accessToken = jwt.sign(
-          { _id: user._id, email: user.email },
-          appEnv.authentication.JWT_SECRET,
-          { expiresIn: '20m' }
-        );
-
-        return res.status(HttpStatusCode.OK).send({
-          accessToken,
-        });
-      }
-    );
+    return res.status(HttpStatusCode.OK).send({
+      accessToken,
+    });
   }
 }

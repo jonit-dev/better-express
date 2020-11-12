@@ -2,8 +2,11 @@ import { injectable } from 'inversify';
 import jwt from 'jsonwebtoken';
 
 import { appEnv } from '../../config/env';
+import { BadRequestError } from '../../errors/BadRequestError';
 import { ConflictError } from '../../errors/ConflictError';
+import { ForbiddenError } from '../../errors/ForbiddenError';
 import { NotFoundError } from '../../errors/NotFoundError';
+import { UnauthorizedError } from '../../errors/UnauthorizedError';
 import { IUser, User } from '../user/user.model';
 import { AuthLoginDTO, AuthSignUpDTO } from './auth.dto';
 import { IAuthResponse } from './auth.types';
@@ -75,5 +78,48 @@ export class AuthService {
     );
 
     await user.save();
+  }
+
+  /**
+   * Generates a new accessToken based on a previous refreshToken
+   * @param user
+   * @param refreshToken
+   */
+  public async refreshToken(
+    user: IUser,
+    refreshToken: string
+  ): Promise<string | false> {
+    if (!refreshToken) {
+      throw new UnauthorizedError(
+        "You're not allowed to access this resource!"
+      );
+    }
+
+    if (!user.refreshTokens) {
+      throw new BadRequestError('Your user does not have refreshTokens.');
+    }
+    if (!user.refreshTokens.find((item) => item.token === refreshToken)) {
+      throw new BadRequestError('Error: Your refreshToken is invalid');
+    }
+
+    jwt.verify(
+      refreshToken,
+      appEnv.authentication.REFRESH_TOKEN_SECRET,
+      (err, user: IUser) => {
+        if (err) {
+          throw new ForbiddenError('Error: Your refreshToken is invalid');
+        }
+
+        // provide a new accessToken to the user
+        const accessToken = jwt.sign(
+          { _id: user._id, email: user.email },
+          appEnv.authentication.JWT_SECRET,
+          { expiresIn: '20m' }
+        );
+
+        return accessToken;
+      }
+    );
+    return false;
   }
 }
