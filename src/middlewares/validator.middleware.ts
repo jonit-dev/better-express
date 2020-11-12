@@ -2,7 +2,7 @@ import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
 
-import { BadRequest } from "../errors/BadRequest";
+import { BadRequestError } from "../errors/BadRequestError";
 import { IValidationError } from "../types/validation.types";
 
 export const DTOValidator = (dtoClass: any) => {
@@ -25,7 +25,7 @@ export const DTOValidator = (dtoClass: any) => {
               errorList.push(item.value);
             }
           }
-          return res.send(new BadRequest(errorList));
+          return res.send(new BadRequestError(errorList));
         } else {
           res.locals.input = output;
           next();

@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { inject, injectable } from "inversify";
 
-import { Conflict } from "../../errors/Conflict";
+import { ConflictError } from "../../errors/ConflictError";
 import { UserCreateDTO } from "./user.dto";
 import { IUser, User } from "./user.model";
 import { UserRepository } from "./user.repository";
@@ -21,7 +21,7 @@ export class UserService {
     const foundUser = await User.findOne({ email });
 
     if (foundUser) {
-      throw new Conflict(
+      throw new ConflictError(
         "User already exists: This e-mail is already registered"
       );
     }

@@ -18,10 +18,12 @@
     "no-trailing-spaces": "off",
     "no-multiple-empty-lines": "off",
     "padded-blocks": "off",
+    "object-curly-spacing": "off",
     "space-before-function-paren": "off",
     "no-useless-constructor": "off",
     "@typescript-eslint/explicit-function-return-type": "error",
     "eslint-no-use-before-defining": "off",
+
     "@typescript-eslint/naming-convention": [
       "error",
       {
