@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
-import { createSchema, ExtractDoc, Type, typedModel } from "ts-mongoose";
+import bcrypt from 'bcrypt';
+import { createSchema, ExtractDoc, Type, typedModel } from 'ts-mongoose';
 
 const userSchema = createSchema(
   {
@@ -15,7 +15,7 @@ const userSchema = createSchema(
 );
 export type IUser = ExtractDoc<typeof userSchema>;
 
-userSchema.pre("save", async function (next): Promise<void> {
+userSchema.pre('save', async function (next): Promise<void> {
   const user: any = this;
   if (user) {
     const hash = await bcrypt.hash(user.password, 10);
@@ -33,4 +33,4 @@ userSchema.methods.isValidPassword = async function (
   return compare;
 };
 
-export const User = typedModel("User", userSchema);
+export const User = typedModel('User', userSchema);
