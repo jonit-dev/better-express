@@ -8,12 +8,12 @@ export class AuthRepository {
   public async signUp(authSignUpDTO: AuthSignUpDTO): Promise<IUser> {
     const { email, password, name } = authSignUpDTO;
 
-    // if it doesnt exists, lets create it
+    // if it doesn't exists, lets create it
 
     const newUser = new User({
       name,
       email,
-      password,
+      password, // password is hashed on pre("save") method from userSchema
     });
 
     await newUser.save();

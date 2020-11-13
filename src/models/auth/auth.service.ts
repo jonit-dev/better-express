@@ -44,12 +44,12 @@ export class AuthService {
 
     const accessToken = jwt.sign(
       { _id: user._id, email: user.email },
-      appEnv.authentication.JWT_SECRET,
+      appEnv.authentication.JWT_SECRET!,
       { expiresIn: '20m' }
     );
     const refreshToken = jwt.sign(
       { _id: user._id, email: user.email },
-      appEnv.authentication.REFRESH_TOKEN_SECRET
+      appEnv.authentication.REFRESH_TOKEN_SECRET!
     );
 
     user.refreshTokens = [...user.refreshTokens, { token: refreshToken }];
@@ -98,8 +98,8 @@ export class AuthService {
 
     jwt.verify(
       refreshToken,
-      appEnv.authentication.REFRESH_TOKEN_SECRET,
-      (err, user: IUser) => {
+      appEnv.authentication.REFRESH_TOKEN_SECRET!,
+      (err, payload: any) => {
         if (err) {
           throw new ForbiddenError('Error: Your refreshToken is invalid');
         }
@@ -107,7 +107,7 @@ export class AuthService {
         // provide a new accessToken to the user
         const accessToken = jwt.sign(
           { _id: user._id, email: user.email },
-          appEnv.authentication.JWT_SECRET,
+          appEnv.authentication.JWT_SECRET!,
           { expiresIn: '20m' }
         );
 

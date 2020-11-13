@@ -24,6 +24,7 @@ const userSchema = createSchema(
 userSchema.plugin(mongooseHidden, {
   hidden: {
     password: true,
+    salt: true,
     refreshTokens: true,
     createdAt: true,
     updatedAt: true,
@@ -32,20 +33,24 @@ userSchema.plugin(mongooseHidden, {
 
 userSchema.pre('save', async function (next): Promise<void> {
   const user: any = this;
-  if (user && user.isModified('password')) {
-    const hash = await bcrypt.hash(user.password, 10);
+  const salt = await bcrypt.genSalt();
+
+  if (user.isModified('password')) {
+    const hash = await bcrypt.hash(user.password, salt);
     user.password = hash;
+    user.salt = salt;
     next();
   }
 });
 
 userSchema.methods.isValidPassword = async function (
-  password
+  providedPassword: string
 ): Promise<boolean> {
-  const user = this;
-  const compare = await bcrypt.compare(password, user.password);
+  const comparisonHash = await bcrypt.hash(providedPassword, this.salt);
 
-  return compare;
+  console.log(comparisonHash);
+  console.log(this.password);
+  return comparisonHash === this.password;
 };
 
 export type IUser = ExtractDoc<typeof userSchema>;
