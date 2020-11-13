@@ -12,17 +12,29 @@ export const AuthRoute = (req: IRequestCustom, res, next): void => {
   if (authHeader) {
     const token = authHeader.split(' ')[1];
 
-    return jwt.verify(
+    jwt.verify(
       token,
-      appEnv.authentication.JWT_SECRET,
-      async (err, user) => {
+      appEnv.authentication.JWT_SECRET!,
+      async (err, jwtPayload: any) => {
         if (err) {
-          throw new ForbiddenError('Please, login to access this resource.');
+          // here we associate the error to a variable because just throwing then inside this async block won't allow them to achieve the outside scope and be caught by errorHandler.middleware. That's why we're passing then to next...
+          const error = new ForbiddenError(
+            'Please, login to access this resource.'
+          );
+          next(error);
         }
 
-        const dbUser = await User.findOne({ email: user.email });
+        const dbUser = await User.findOne({ email: jwtPayload.email });
 
-        if (dbUser) req.user = dbUser;
+        if (!dbUser) {
+          const error = new ForbiddenError(
+            'Please, login to access this resource.'
+          );
+          next(error);
+        } else {
+          req.user = dbUser;
+        }
+
         next();
       }
     );
