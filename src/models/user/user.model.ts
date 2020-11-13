@@ -48,8 +48,6 @@ userSchema.methods.isValidPassword = async function (
 ): Promise<boolean> {
   const comparisonHash = await bcrypt.hash(providedPassword, this.salt);
 
-  console.log(comparisonHash);
-  console.log(this.password);
   return comparisonHash === this.password;
 };
 
