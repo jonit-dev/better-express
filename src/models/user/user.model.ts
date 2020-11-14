@@ -1,10 +1,24 @@
 import bcrypt from 'bcrypt';
 import { createSchema, ExtractDoc, Type, typedModel } from 'ts-mongoose';
 
+import { TypeHelper } from '../../libs/type.helper';
+import { UserAuthFlow, UserRoles } from '../../types/user.types';
+
 const mongooseHidden = require('mongoose-hidden')();
+
 const userSchema = createSchema(
   {
     name: Type.string(),
+    role: Type.string({
+      required: true,
+      default: UserRoles.regular,
+      enum: TypeHelper.enumToStringArray(UserRoles),
+    }),
+    authFlow: Type.string({
+      required: true,
+      default: UserAuthFlow.basic,
+      enum: TypeHelper.enumToStringArray(UserAuthFlow),
+    }),
     email: Type.string({ required: true }),
     password: Type.string(),
     salt: Type.string(),
@@ -12,6 +26,7 @@ const userSchema = createSchema(
       token: Type.string(),
     }),
 
+    // Static method types
     ...({} as {
       isValidPassword: (password: string) => Promise<boolean>;
       checkIfExists: (id: number) => Promise<boolean>;

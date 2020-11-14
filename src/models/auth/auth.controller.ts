@@ -7,7 +7,7 @@ import { AuthRoute } from '../../middlewares/auth.middleware';
 import { DTOValidator } from '../../middlewares/validator.middleware';
 import { HttpStatusCode, IRequestCustom } from '../../types/express.types';
 import { IGoogleOAuthUrlResponse } from '../../types/googleOAuth.types';
-import { IUserModel } from '../../types/user.types';
+import { IUser } from '../user/user.model';
 import { AuthLoginDTO, AuthRefreshTokenDTO, AuthSignUpDTO } from './auth.dto';
 import { AuthService } from './auth.service';
 import { IAuthRefreshTokenResponse, IAuthResponse } from './auth.types';
@@ -48,7 +48,7 @@ export class AuthController implements interfaces.Controller {
   // JWT FLOW ========================================
 
   @httpPost('/signup', DTOValidator(AuthSignUpDTO))
-  public async signUp(@requestBody() authSignUpDTO): Promise<IUserModel> {
+  public async signUp(@requestBody() authSignUpDTO): Promise<IUser> {
     return this.authService.signUp(authSignUpDTO);
   }
 
