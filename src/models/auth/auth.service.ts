@@ -5,10 +5,12 @@ import { appEnv } from '../../config/env';
 import { BadRequestError } from '../../errors/BadRequestError';
 import { ConflictError } from '../../errors/ConflictError';
 import { ForbiddenError } from '../../errors/ForbiddenError';
+import { InternalServerError } from '../../errors/InternalServerError';
 import { NotFoundError } from '../../errors/NotFoundError';
 import { UnauthorizedError } from '../../errors/UnauthorizedError';
 import { GoogleOAuthHelper } from '../../libs/googleOauth.helper';
-import { IGoogleOAuthUser } from '../../types/googleOAuth.types';
+import { IGoogleOAuthUserInfoResponse } from '../../types/googleOAuth.types';
+import { UserAuthFlow } from '../../types/user.types';
 import { IUser, User } from '../user/user.model';
 import { AuthLoginDTO, AuthSignUpDTO } from './auth.dto';
 import { AuthRepository } from './auth.repository';
@@ -21,7 +23,9 @@ export class AuthService {
     @inject('GoogleOAuthHelper') private googleOAuthHelper: GoogleOAuthHelper
   ) {}
 
-  // JWT FLOW ========================================
+  /* #############################################################|
+    |  >>> BASIC JWT FLOW
+    *############################################################## */
 
   public async signUp(authSignUpDTO: AuthSignUpDTO): Promise<IUser> {
     const { email } = authSignUpDTO;
@@ -47,19 +51,7 @@ export class AuthService {
 
     // else, if we got an user with these credentials, lets generate an accessToken
 
-    const accessToken = jwt.sign(
-      { _id: user._id, email: user.email },
-      appEnv.authentication.JWT_SECRET!,
-      { expiresIn: '20m' }
-    );
-    const refreshToken = jwt.sign(
-      { _id: user._id, email: user.email },
-      appEnv.authentication.REFRESH_TOKEN_SECRET!
-    );
-
-    user.refreshTokens = [...user.refreshTokens, { token: refreshToken }];
-
-    await user.save();
+    const { accessToken, refreshToken } = await user.generateAccessToken();
 
     return {
       accessToken,
@@ -122,13 +114,49 @@ export class AuthService {
     return false;
   }
 
-  // GOOGLE OAUTH FLOW ========================================
+  /* #############################################################|
+  |  >>> GOOGLE OAUTH FLOW
+  *############################################################## */
 
   public async generateGoogleOAuthUrl(): Promise<string> {
     return this.googleOAuthHelper.urlGoogle();
   }
 
-  public async getGoogleUser(code: string): Promise<IGoogleOAuthUser> {
+  public async getGoogleUser(
+    code: string
+  ): Promise<IGoogleOAuthUserInfoResponse> {
     return await this.googleOAuthHelper.getGoogleUser(code);
+  }
+
+  /**
+   * This function is responsible for handling what happens after we get the userInfo from google (IGoogleOAuthUserInfoResponse), syncing him with our system database
+   */
+  public async googleOAuthSync(
+    googleUserInfo: IGoogleOAuthUserInfoResponse
+  ): Promise<IAuthResponse> {
+    if (!googleUserInfo.email) {
+      throw new InternalServerError(
+        "Cannot login this user: Google's e-mail not provided!"
+      );
+    }
+
+    const user = await User.findOne({ email: googleUserInfo.email });
+
+    if (!user) {
+      //! create a new user and generate accessToken
+
+      const newUser = await this.authRepository.signUp({
+        name: googleUserInfo.name,
+        email: googleUserInfo.email,
+        authFlow: UserAuthFlow.googleOAuth,
+      });
+
+      return await newUser.generateAccessToken();
+    } else {
+      // Check if user already exists on database...
+      // just create a new access token and refresh token and provide it
+
+      return await user.generateAccessToken();
+    }
   }
 }

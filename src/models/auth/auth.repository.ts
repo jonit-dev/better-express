@@ -1,19 +1,13 @@
 import { injectable } from 'inversify';
 
 import { IUser, User } from '../user/user.model';
-import { AuthSignUpDTO } from './auth.dto';
 
 @injectable()
 export class AuthRepository {
-  public async signUp(authSignUpDTO: AuthSignUpDTO): Promise<IUser> {
-    const { email, password, name } = authSignUpDTO;
-
-    // if it doesn't exists, lets create it
-
+  public async signUp(newUserData): Promise<IUser> {
+    //! Note: password is hashed on pre("save") method from userSchema
     const newUser = new User({
-      name,
-      email,
-      password, // password is hashed on pre("save") method from userSchema
+      ...newUserData,
     });
 
     await newUser.save();

@@ -1,8 +1,11 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { createSchema, ExtractDoc, Type, typedModel } from 'ts-mongoose';
 
+import { appEnv } from '../../config/env';
 import { TypeHelper } from '../../libs/type.helper';
 import { UserAuthFlow, UserRoles } from '../../types/user.types';
+import { IAuthResponse } from '../auth/auth.types';
 
 const mongooseHidden = require('mongoose-hidden')();
 
@@ -29,7 +32,7 @@ const userSchema = createSchema(
     // Static method types
     ...({} as {
       isValidPassword: (password: string) => Promise<boolean>;
-      checkIfExists: (id: number) => Promise<boolean>;
+      generateAccessToken: () => Promise<IAuthResponse>;
     }),
   },
   { timestamps: { createdAt: true, updatedAt: true } }
@@ -64,6 +67,31 @@ userSchema.methods.isValidPassword = async function (
   const comparisonHash = await bcrypt.hash(providedPassword, this.salt);
 
   return comparisonHash === this.password;
+};
+
+userSchema.methods.generateAccessToken = async function (): Promise<
+  IAuthResponse
+> {
+  const user: any = this;
+
+  const accessToken = jwt.sign(
+    { _id: user._id, email: user.email },
+    appEnv.authentication.JWT_SECRET!,
+    { expiresIn: '20m' }
+  );
+  const refreshToken = jwt.sign(
+    { _id: user._id, email: user.email },
+    appEnv.authentication.REFRESH_TOKEN_SECRET!
+  );
+
+  user.refreshTokens = [...user.refreshTokens, { token: refreshToken }];
+
+  await user.save();
+
+  return {
+    accessToken,
+    refreshToken,
+  };
 };
 
 export type IUser = ExtractDoc<typeof userSchema>;

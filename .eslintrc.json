@@ -22,6 +22,7 @@
     "keyword-spacing": "off",
     "camelcase": "off",
     "no-empty": "off",
+    "no-case-declarations": "off",
     "object-curly-spacing": "off",
     "space-before-function-paren": "off",
     "no-useless-constructor": "off",

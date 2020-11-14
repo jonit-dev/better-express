@@ -6,7 +6,7 @@ import { InternalServerError } from '../../errors/InternalServerError';
 import { AuthRoute } from '../../middlewares/auth.middleware';
 import { DTOValidator } from '../../middlewares/validator.middleware';
 import { HttpStatusCode, IRequestCustom } from '../../types/express.types';
-import { IGoogleOAuthUrlResponse } from '../../types/googleOAuth.types';
+import { IGoogleOAuthUrlResponse, IGoogleOAuthUserInfoResponse } from '../../types/googleOAuth.types';
 import { IUser } from '../user/user.model';
 import { AuthLoginDTO, AuthRefreshTokenDTO, AuthSignUpDTO } from './auth.dto';
 import { AuthService } from './auth.service';
@@ -30,19 +30,25 @@ export class AuthController implements interfaces.Controller {
   }
 
   @httpGet('/google/redirect')
-  public async googleOAuthRedirect(req: Request, res: Response): Promise<any> {
+  public async googleOAuthRedirect(
+    req: Request,
+    res: Response
+  ): Promise<IAuthResponse> {
     const { code, scope } = req.query;
 
-    console.log(code);
-    console.log(scope);
+    const googleUserInfo: IGoogleOAuthUserInfoResponse = await this.authService.getGoogleUser(
+      String(code)
+    );
 
-    const userInfo = await this.authService.getGoogleUser(String(code));
+    const {
+      accessToken,
+      refreshToken,
+    } = await this.authService.googleOAuthSync(googleUserInfo);
 
-    console.log(userInfo);
-
-    return res.status(200).send({
-      status: 'ok!',
-    });
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   // JWT FLOW ========================================
