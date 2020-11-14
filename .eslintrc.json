@@ -20,6 +20,7 @@
     "no-unused-expressions": "off",
     "padded-blocks": "off",
     "keyword-spacing": "off",
+    "camelcase": "off",
     "no-empty": "off",
     "object-curly-spacing": "off",
     "space-before-function-paren": "off",

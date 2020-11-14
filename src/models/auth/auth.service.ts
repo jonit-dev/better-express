@@ -7,6 +7,8 @@ import { ConflictError } from '../../errors/ConflictError';
 import { ForbiddenError } from '../../errors/ForbiddenError';
 import { NotFoundError } from '../../errors/NotFoundError';
 import { UnauthorizedError } from '../../errors/UnauthorizedError';
+import { GoogleOAuthHelper } from '../../libs/googleOauth.helper';
+import { IGoogleOAuthUser } from '../../types/googleOAuth.types';
 import { IUser, User } from '../user/user.model';
 import { AuthLoginDTO, AuthSignUpDTO } from './auth.dto';
 import { AuthRepository } from './auth.repository';
@@ -15,8 +17,11 @@ import { IAuthResponse } from './auth.types';
 @injectable()
 export class AuthService {
   constructor(
-    @inject('AuthRepository') private authRepository: AuthRepository
+    @inject('AuthRepository') private authRepository: AuthRepository,
+    @inject('GoogleOAuthHelper') private googleOAuthHelper: GoogleOAuthHelper
   ) {}
+
+  // JWT FLOW ========================================
 
   public async signUp(authSignUpDTO: AuthSignUpDTO): Promise<IUser> {
     const { email } = authSignUpDTO;
@@ -115,5 +120,15 @@ export class AuthService {
       }
     );
     return false;
+  }
+
+  // GOOGLE OAUTH FLOW ========================================
+
+  public async generateGoogleOAuthUrl(): Promise<string> {
+    return this.googleOAuthHelper.urlGoogle();
+  }
+
+  public async getGoogleUser(code: string): Promise<IGoogleOAuthUser> {
+    return await this.googleOAuthHelper.getGoogleUser(code);
   }
 }
