@@ -9,5 +9,6 @@
   "watch": [
     "./src/**/*"
   ],
-  "ext": "ts json"
+  "ext": "ts json",
+  "exec": "yarn install && ts-node-dev --respawn --transpile-only -r dotenv/config ./src/index.ts"
 }
