@@ -12,6 +12,7 @@ services:
       - /usr/src/app/node_modules
     environment:
       FORCE_COLOR: 'true'
+      TS_NODE_TRANSPILE_ONLY: 'true'
     links:
       - app-db
     depends_on:

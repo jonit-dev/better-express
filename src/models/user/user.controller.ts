@@ -10,7 +10,7 @@ import { UserService } from './user.service';
 export class UserController implements interfaces.Controller {
   constructor(@inject('UserService') private userService: UserService) {}
 
-  @httpGet('/')
+  @httpGet('/foda-se')
   private getUsers(req: Request, res: Response): IUser[] {
     return [];
   }
