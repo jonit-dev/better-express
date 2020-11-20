@@ -1,38 +1,38 @@
-version: '3'
+version: "3"
 services:
-  app-api:
-    container_name: app-api
+  be-api:
+    container_name: be-api
     restart: always
     build: .
     env_file: .env
     ports:
-      - '$SERVER_PORT:$SERVER_PORT'
+      - "$SERVER_PORT:$SERVER_PORT"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     environment:
-      FORCE_COLOR: 'true'
+      FORCE_COLOR: "true"
     links:
-      - app-db
+      - be-db
     depends_on:
-      - app-db
+      - be-db
     networks:
-      - app-network
-  app-db:
-    container_name: app-db
+      - be-network
+  be-db:
+    container_name: be-db
     image: mongo
     volumes:
       - ./docker_scripts/:/docker-entrypoint-initdb.d
     ports:
-      - '$MONGO_PORT:$MONGO_PORT'
+      - "$MONGO_PORT:$MONGO_PORT"
     environment:
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
       MONGO_PORT: ${MONGO_PORT}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     networks:
-      - app-network
+      - be-network
 
 networks:
-  app-network:
+  be-network:
     driver: bridge

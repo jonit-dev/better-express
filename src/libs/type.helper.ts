@@ -5,7 +5,7 @@ export class TypeHelper {
     const keys: string[] = [];
 
     enumKv.forEach((kv) => {
-      if (typeof kv.value === 'string') {
+      if (typeof kv.value === "string") {
         keys.push(kv.value);
       }
     });

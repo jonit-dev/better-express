@@ -1,15 +1,17 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import { InversifyExpressServer } from 'inversify-express-utils';
-import morgan from 'morgan';
+import bodyParser from "body-parser";
+import cors from "cors";
+import { InversifyExpressServer } from "inversify-express-utils";
+import morgan from "morgan";
 
-import { appEnv } from './config/env';
-import { container } from './config/inversify';
-import { MongoDBHelper } from './libs/mongo.helper';
-import { ServerHelper } from './libs/server.helper';
-import { errorHandler } from './middlewares/errorHandler.midleware';
+import { appEnv } from "./config/env";
+import { container } from "./config/inversify";
+import { MongoDBHelper } from "./libs/mongo.helper";
+import { ServerHelper } from "./libs/server.helper";
+import { errorHandler } from "./middlewares/errorHandler.midleware";
+
+
 
 const server = new InversifyExpressServer(container);
 
@@ -19,9 +21,9 @@ server.setConfig((app) => {
       extended: true,
     })
   );
-  app.use('*', cors());
+  app.use("*", cors());
   app.use(bodyParser.json());
-  app.use(morgan('dev'));
+  app.use(morgan("dev"));
 });
 
 const app = server.build();

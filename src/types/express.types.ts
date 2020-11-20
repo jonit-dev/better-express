@@ -1,6 +1,6 @@
-import { Request } from 'express';
+import { Request } from "express";
 
-import { IUser } from '../models/user/user.model';
+import { IUser } from "../models/user/user.model";
 
 export interface IRequestCustom extends Request {
   body: {

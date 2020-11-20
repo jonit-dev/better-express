@@ -1,6 +1,6 @@
 export enum UserRoles {
-  regular = 'regular',
-  admin = 'admin',
+  regular = "regular",
+  admin = "admin",
 }
 
 export interface IUserToken {
@@ -8,6 +8,6 @@ export interface IUserToken {
 }
 
 export enum UserAuthFlow {
-  basic = 'basic',
-  googleOAuth = 'googleOAuth',
+  basic = "basic",
+  googleOAuth = "googleOAuth",
 }

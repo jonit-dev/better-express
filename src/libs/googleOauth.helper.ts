@@ -1,10 +1,10 @@
-import axios from 'axios';
-import { google } from 'googleapis';
-import { injectable } from 'inversify';
+import axios from "axios";
+import { google } from "googleapis";
+import { injectable } from "inversify";
 
-import { appEnv } from '../config/env';
-import { InternalServerError } from '../errors/InternalServerError';
-import { IGoogleConfig, IGoogleOAuthTokenPayload } from '../types/googleOAuth.types';
+import { appEnv } from "../config/env";
+import { InternalServerError } from "../errors/InternalServerError";
+import { IGoogleConfig, IGoogleOAuthTokenPayload } from "../types/googleOAuth.types";
 
 @injectable()
 export class GoogleOAuthHelper {
@@ -15,8 +15,8 @@ export class GoogleOAuthHelper {
   };
 
   private defaultScope = [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email',
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "https://www.googleapis.com/auth/userinfo.email",
   ];
 
   /**
@@ -35,8 +35,8 @@ export class GoogleOAuthHelper {
    */
   private getConnectionUrl(auth): any {
     return auth.generateAuthUrl({
-      access_type: 'offline',
-      prompt: 'consent', // access type and approval prompt will force a new refresh token to be made each time signs in
+      access_type: "offline",
+      prompt: "consent", // access type and approval prompt will force a new refresh token to be made each time signs in
       scope: this.defaultScope,
     });
   }
@@ -45,13 +45,13 @@ export class GoogleOAuthHelper {
     code: string
   ): Promise<IGoogleOAuthTokenPayload> {
     const { data } = await axios({
-      url: 'https://oauth2.googleapis.com/token',
-      method: 'post',
+      url: "https://oauth2.googleapis.com/token",
+      method: "post",
       data: {
         client_id: this.googleConfig.clientID,
         client_secret: this.googleConfig.clientSecret,
         redirect_uri: this.googleConfig.redirectURI,
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         code,
       },
     });

@@ -6,7 +6,7 @@ export class ApplicationError extends Error {
 
     Error.captureStackTrace(this, this.constructor);
 
-    this.message = message || 'Something went wrong. Please try again.';
+    this.message = message || "Something went wrong. Please try again.";
 
     this.statusCode = statusCode || 500;
   }

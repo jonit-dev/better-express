@@ -1,6 +1,6 @@
-import { appEnv } from '../config/env';
-import { IServerBootstrapVars as IServerBootstrapConfig } from '../types/express.types';
-import { ConsoleHelper } from './console.helper';
+import { appEnv } from "../config/env";
+import { IServerBootstrapVars as IServerBootstrapConfig } from "../types/express.types";
+import { ConsoleHelper } from "./console.helper";
 
 export class ServerHelper {
   public static showBootstrapMessage(config: IServerBootstrapConfig): void {
@@ -17,14 +17,14 @@ export class ServerHelper {
 
     let terminalColor;
     switch (appEnv.general.ENV) {
-      case 'Development':
-        terminalColor = 'YELLOW';
+      case "Development":
+        terminalColor = "YELLOW";
         break;
-      case 'Production':
-        terminalColor = 'RED';
+      case "Production":
+        terminalColor = "RED";
         break;
       default:
-        terminalColor = 'BLUE';
+        terminalColor = "BLUE";
         break;
     }
     consoleHelper.coloredLog(
