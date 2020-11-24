@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "tsc": "tsc",
-    "dev": "yarn install && ts-node-dev --ignore-watch ./node_modules --transpile-only --respawn -r dotenv/config ./src/index.ts",
+    "dev": "yarn install && ts-node-dev --transpile-only --respawn -r dotenv/config ./src/index.ts",
     "build": "tsc -p .",
     "lint": "eslint --fix ./src/**/*.ts",
     "prod": "tsc && node -r dotenv/config ./dist/index.js"
