@@ -7,7 +7,7 @@
     "tsc": "tsc",
     "dev": "yarn install && ts-node-dev --ignore-watch ./node_modules --transpile-only --respawn -r dotenv/config ./src/index.ts",
     "build": "tsc -p .",
-    "lint": "eslint ./src/**/*.ts --fix"
+    "lint": "eslint --fix ./src/**/*.ts"
   },
   "husky": {
     "hooks": {
