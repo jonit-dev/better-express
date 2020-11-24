@@ -1,13 +1,13 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { createSchema, ExtractDoc, Type, typedModel } from 'ts-mongoose';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { createSchema, ExtractDoc, Type, typedModel } from "ts-mongoose";
 
-import { appEnv } from '../../config/env';
-import { TypeHelper } from '../../libs/type.helper';
-import { UserAuthFlow, UserRoles } from '../../types/user.types';
-import { IAuthResponse } from '../auth/auth.types';
+import { appEnv } from "../../config/env";
+import { TypeHelper } from "../../libs/type.helper";
+import { UserAuthFlow, UserRoles } from "../../types/user.types";
+import { IAuthResponse } from "../auth/auth.types";
 
-const mongooseHidden = require('mongoose-hidden')();
+const mongooseHidden = require("mongoose-hidden")();
 
 const userSchema = createSchema(
   {
@@ -49,11 +49,11 @@ userSchema.plugin(mongooseHidden, {
   },
 });
 
-userSchema.pre('save', async function (next): Promise<void> {
+userSchema.pre("save", async function (next): Promise<void> {
   const user: any = this;
   const salt = await bcrypt.genSalt();
 
-  if (user.isModified('password')) {
+  if (user.isModified("password")) {
     const hash = await bcrypt.hash(user.password, salt);
     user.password = hash;
     user.salt = salt;
@@ -77,7 +77,7 @@ userSchema.methods.generateAccessToken = async function (): Promise<
   const accessToken = jwt.sign(
     { _id: user._id, email: user.email },
     appEnv.authentication.JWT_SECRET!,
-    { expiresIn: '20m' }
+    { expiresIn: "20m" }
   );
   const refreshToken = jwt.sign(
     { _id: user._id, email: user.email },
@@ -96,7 +96,7 @@ userSchema.methods.generateAccessToken = async function (): Promise<
 
 export type IUser = ExtractDoc<typeof userSchema>;
 
-export const User = typedModel('User', userSchema, undefined, undefined, {
+export const User = typedModel("User", userSchema, undefined, undefined, {
   // Static methods ========================================
   checkIfExists: async (email: string): Promise<boolean> => {
     const exists = await User.findOne({ email });

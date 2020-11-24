@@ -1,6 +1,6 @@
-import { injectable } from 'inversify';
+import { injectable } from "inversify";
 
-import { IUser, User } from '../user/user.model';
+import { IUser, User } from "../user/user.model";
 
 @injectable()
 export class AuthRepository {

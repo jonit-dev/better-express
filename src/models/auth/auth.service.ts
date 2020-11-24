@@ -1,26 +1,26 @@
-import { inject, injectable } from 'inversify';
-import jwt from 'jsonwebtoken';
+import { inject, injectable } from "inversify";
+import jwt from "jsonwebtoken";
 
-import { appEnv } from '../../config/env';
-import { BadRequestError } from '../../errors/BadRequestError';
-import { ConflictError } from '../../errors/ConflictError';
-import { ForbiddenError } from '../../errors/ForbiddenError';
-import { InternalServerError } from '../../errors/InternalServerError';
-import { NotFoundError } from '../../errors/NotFoundError';
-import { UnauthorizedError } from '../../errors/UnauthorizedError';
-import { GoogleOAuthHelper } from '../../libs/googleOauth.helper';
-import { IGoogleOAuthUserInfoResponse } from '../../types/googleOAuth.types';
-import { UserAuthFlow } from '../../types/user.types';
-import { IUser, User } from '../user/user.model';
-import { AuthLoginDTO, AuthSignUpDTO } from './auth.dto';
-import { AuthRepository } from './auth.repository';
-import { IAuthResponse } from './auth.types';
+import { appEnv } from "../../config/env";
+import { BadRequestError } from "../../errors/BadRequestError";
+import { ConflictError } from "../../errors/ConflictError";
+import { ForbiddenError } from "../../errors/ForbiddenError";
+import { InternalServerError } from "../../errors/InternalServerError";
+import { NotFoundError } from "../../errors/NotFoundError";
+import { UnauthorizedError } from "../../errors/UnauthorizedError";
+import { GoogleOAuthHelper } from "../../libs/googleOauth.helper";
+import { IGoogleOAuthUserInfoResponse } from "../../types/googleOAuth.types";
+import { UserAuthFlow } from "../../types/user.types";
+import { IUser, User } from "../user/user.model";
+import { AuthLoginDTO, AuthSignUpDTO } from "./auth.dto";
+import { AuthRepository } from "./auth.repository";
+import { IAuthResponse } from "./auth.types";
 
 @injectable()
 export class AuthService {
   constructor(
-    @inject('AuthRepository') private authRepository: AuthRepository,
-    @inject('GoogleOAuthHelper') private googleOAuthHelper: GoogleOAuthHelper
+    @inject("AuthRepository") private authRepository: AuthRepository,
+    @inject("GoogleOAuthHelper") private googleOAuthHelper: GoogleOAuthHelper
   ) {}
 
   /* #############################################################|
@@ -46,7 +46,7 @@ export class AuthService {
     const user = await User.findByCredentials(email, password);
 
     if (!user) {
-      throw new NotFoundError('Invalid credentials. Please, try again!');
+      throw new NotFoundError("Invalid credentials. Please, try again!");
     }
 
     // else, if we got an user with these credentials, lets generate an accessToken
@@ -87,10 +87,10 @@ export class AuthService {
     }
 
     if (!user.refreshTokens) {
-      throw new BadRequestError('Your user does not have refreshTokens.');
+      throw new BadRequestError("Your user does not have refreshTokens.");
     }
     if (!user.refreshTokens.find((item) => item.token === refreshToken)) {
-      throw new BadRequestError('Error: Your refreshToken is invalid');
+      throw new BadRequestError("Error: Your refreshToken is invalid");
     }
 
     jwt.verify(
@@ -98,14 +98,14 @@ export class AuthService {
       appEnv.authentication.REFRESH_TOKEN_SECRET!,
       (err, payload: any) => {
         if (err) {
-          throw new ForbiddenError('Error: Your refreshToken is invalid');
+          throw new ForbiddenError("Error: Your refreshToken is invalid");
         }
 
         // provide a new accessToken to the user
         const accessToken = jwt.sign(
           { _id: user._id, email: user.email },
           appEnv.authentication.JWT_SECRET!,
-          { expiresIn: '20m' }
+          { expiresIn: "20m" }
         );
 
         return accessToken;

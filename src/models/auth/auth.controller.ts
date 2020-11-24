@@ -1,24 +1,25 @@
-import { Request, Response } from 'express';
-import { inject } from 'inversify';
-import { controller, httpGet, httpPost, interfaces, requestBody } from 'inversify-express-utils';
+import { Request, Response } from "express";
+import { inject } from "inversify";
+import { controller, httpGet, httpPost, interfaces, requestBody } from "inversify-express-utils";
 
-import { InternalServerError } from '../../errors/InternalServerError';
-import { AuthRoute } from '../../middlewares/auth.middleware';
-import { DTOValidator } from '../../middlewares/validator.middleware';
-import { HttpStatusCode, IRequestCustom } from '../../types/express.types';
-import { IGoogleOAuthUrlResponse, IGoogleOAuthUserInfoResponse } from '../../types/googleOAuth.types';
-import { IUser } from '../user/user.model';
-import { AuthLoginDTO, AuthRefreshTokenDTO, AuthSignUpDTO } from './auth.dto';
-import { AuthService } from './auth.service';
-import { IAuthRefreshTokenResponse, IAuthResponse } from './auth.types';
+import { InternalServerError } from "../../errors/InternalServerError";
+import { AuthRoute } from "../../middlewares/auth.middleware";
+import { DTOValidator } from "../../middlewares/validator.middleware";
+import { HttpStatusCode, IRequestCustom } from "../../types/express.types";
+import { IGoogleOAuthUrlResponse, IGoogleOAuthUserInfoResponse } from "../../types/googleOAuth.types";
+import { IUser } from "../user/user.model";
+import { AuthLoginDTO, AuthRefreshTokenDTO, AuthSignUpDTO } from "./auth.dto";
+import { AuthService } from "./auth.service";
+import { IAuthRefreshTokenResponse, IAuthResponse } from "./auth.types";
 
-@controller('/auth')
+@controller("/auth")
 export class AuthController implements interfaces.Controller {
-  constructor(@inject('AuthService') private authService: AuthService) {}
+  constructor(@inject("AuthService") private authService: AuthService) { }
+
 
   // GOOGLE FLOW ========================================
 
-  @httpGet('/google/url')
+  @httpGet("/google/url")
   public async generateGoogleOAuthUrl(
     req: Request,
     res: Response
@@ -29,7 +30,7 @@ export class AuthController implements interfaces.Controller {
     });
   }
 
-  @httpGet('/google/redirect')
+  @httpGet("/google/redirect")
   public async googleOAuthRedirect(
     req: Request,
     res: Response
@@ -53,12 +54,12 @@ export class AuthController implements interfaces.Controller {
 
   // JWT FLOW ========================================
 
-  @httpPost('/signup', DTOValidator(AuthSignUpDTO))
+  @httpPost("/signup", DTOValidator(AuthSignUpDTO))
   public async signUp(@requestBody() authSignUpDTO): Promise<IUser> {
     return this.authService.signUp(authSignUpDTO);
   }
 
-  @httpPost('/login', DTOValidator(AuthLoginDTO))
+  @httpPost("/login", DTOValidator(AuthLoginDTO))
   public async login(@requestBody() authLoginDTO): Promise<IAuthResponse> {
     const { accessToken, refreshToken } = await this.authService.login(
       authLoginDTO
@@ -70,7 +71,7 @@ export class AuthController implements interfaces.Controller {
     };
   }
 
-  @httpPost('/logout', DTOValidator(AuthRefreshTokenDTO), AuthRoute)
+  @httpPost("/logout", DTOValidator(AuthRefreshTokenDTO), AuthRoute)
   public async logout(
     @requestBody() authRefreshTokenDTO,
     req: IRequestCustom,
@@ -85,7 +86,7 @@ export class AuthController implements interfaces.Controller {
     return res.status(HttpStatusCode.OK).send();
   }
 
-  @httpPost('/refresh-token', DTOValidator(AuthRefreshTokenDTO), AuthRoute)
+  @httpPost("/refresh-token", DTOValidator(AuthRefreshTokenDTO), AuthRoute)
   public async refreshToken(
     req: IRequestCustom,
     res
@@ -98,7 +99,7 @@ export class AuthController implements interfaces.Controller {
 
     if (!accessToken) {
       throw new InternalServerError(
-        'Error while trying to generate your access token!'
+        "Error while trying to generate your access token!"
       );
     }
 
