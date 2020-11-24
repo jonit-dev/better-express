@@ -5,7 +5,7 @@ export const errorHandlerMiddleware = function (err, req, res, next): any {
   console.log("statusCode: ");
   console.log(err.statusCode);
   if (err.statusCode) {
-    return res.status(err.statusCode).send(err);
+    return res.status(err.statusCode).send(errr);
   }
 
   next();
