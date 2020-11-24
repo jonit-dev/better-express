@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from "express";
 import { BadRequestError } from "../errors/BadRequestError";
 import { IValidationError } from "../types/validation.types";
 
-export const DTOValidator = (dtoClass: any) => {
+export const DTOValidatorMiddleware = (dtoClass: any) => {
   return function (req: Request, res: Response, next: NextFunction): any {
     const output = plainToClass(dtoClass, req.body);
 

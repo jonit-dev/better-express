@@ -6,7 +6,7 @@ import { UnauthorizedError } from "../errors/UnauthorizedError";
 import { User } from "../models/user/user.model";
 import { IRequestCustom } from "../types/express.types";
 
-export const AuthRoute = (req: IRequestCustom, res, next): void => {
+export const AuthMiddleware = (req: IRequestCustom, res, next): void => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {

@@ -9,7 +9,7 @@ import { appEnv } from "./config/env";
 import { container } from "./config/inversify";
 import { MongoDBHelper } from "./libs/mongo.helper";
 import { ServerHelper } from "./libs/server.helper";
-import { errorHandler } from "./middlewares/errorHandler.midleware";
+import { errorHandlerMiddleware } from "./middlewares/errorHandler.midleware";
 
 
 
@@ -43,4 +43,4 @@ app.listen(port, async () => {
   });
 });
 
-app.use(errorHandler); // global error handling middleware must be the last one in order
+app.use(errorHandlerMiddleware); // global error handling middleware must be the last one in order

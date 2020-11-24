@@ -1,4 +1,4 @@
-export const errorHandler = function (err, req, res, next): any {
+export const errorHandlerMiddleware = function (err, req, res, next): any {
   console.log(err.stack);
 
   console.log("errorHandler activated");
