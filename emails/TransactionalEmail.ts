@@ -58,6 +58,11 @@ export class TransactionalEmail {
 
           const user = await User.findOne({ email: to }) as IUser;
 
+          if (!user) {
+            console.log("This user is not in our database! Skipping sending e-mail");
+            return false;
+          }
+
           if ((user?.unsubscribed === true)) {
             console.log("Skipping email submission to unsubscribed user");
             return true;
