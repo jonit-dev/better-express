@@ -11,7 +11,27 @@ import { emailProviders } from "./emailProviders";
 
 export class TransactionalEmail {
 
-  public static async smartSend(to: string | undefined, from: string | undefined, subject: string, html: string, text: string): Promise<boolean> {
+  /**
+   * 
+   * @param to email's destination
+   * @param from email's sender
+   * @param subject what's the e-mail about?
+   * @param template folder name from emails/templates
+   * @param customVars object containing any custom vars to replace in your template.
+   */
+  public static async send(to: string | undefined, subject: string, template: string, customVars: object, from: string | undefined = appEnv.general.ADMIN_EMAIL): Promise<boolean> {
+
+
+    const html = this.loadEmailTemplate(
+      EmailType.Html,
+      template,
+      customVars
+    );
+    const text = this.loadEmailTemplate(
+      EmailType.Text,
+      template,
+      customVars
+    );
 
     const today = moment.tz(new Date(), appEnv.general.TIMEZONE!).format("YYYY-MM-DD[T00:00:00.000Z]");
 
@@ -54,15 +74,11 @@ export class TransactionalEmail {
           const encryptionHelper = new EncryptionHelper();
           const encryptedEmail = encryptionHelper.encrypt(to);
 
-          // const htmlWithUnsubscribeLink = html.replace("[Unsubscribe Link]", TS.string(null, "unsubscribeLink", {
-          //   unsubscribeUrl: `${appEnv.general.API_URL}/unsubscribe?hashEmail=${encryptedEmail}&lang=${appEnv.general.LANGUAGE}`
-          // }));
-          //! Warning, should have unsubscribe link setup!
-          const htmlWithUnsubscribeLink = html;
+          const htmlWithUnsubscribeLink = html.replace("[Unsubscribe Link]", `<a href="${appEnv.general.API_URL!}/unsubscribe?hashEmail=${encryptedEmail.content}&lang=${appEnv.general.LANGUAGE!}">Do you want to stop receiving these e-mails? Click here!</p>`);
 
           const submissionStatus = await emailProvider.emailSendingFunction(
             to,
-            appEnv.general.ADMIN_EMAIL,
+            from,
             subject,
             htmlWithUnsubscribeLink,
             text
@@ -84,12 +100,7 @@ export class TransactionalEmail {
           } else {
             return false;
           }
-
-
         }
-
-
-
       } catch (error) {
         console.log(`Failed to submit email through ${emailProvider.key}`);
         console.error(error);
@@ -99,13 +110,10 @@ export class TransactionalEmail {
     }
 
     // if we reach this point, it means that there's no providers with credits left!
-
-
-
     return false;
   }
 
-  public loadEmailTemplate(type: EmailType, template: string, customVars: object): string {
+  public static loadEmailTemplate(type: EmailType, template: string, customVars: object): string {
     let extension;
 
     if (type === EmailType.Html) {
@@ -115,21 +123,21 @@ export class TransactionalEmail {
     }
 
     const data = readFileSync(
-      `${process.env.TEMPLATES_FOLDER}/${template}/content${extension}`,
+      `${appEnv.transactionalEmail.templatesFolder}/${template}/content${extension}`,
       "utf-8"
     ).toString();
 
-    return this.replaceTemplateCustomVars(data, customVars);
+    return this._replaceTemplateCustomVars(data, customVars);
   }
 
-  private replaceTemplateCustomVars(html: string, customVars: object): string {
+  private static _replaceTemplateCustomVars(html: string, customVars: object): string {
     const keys = Object.keys(customVars);
 
     const globalTemplateVars = {
-      "Product Name": process.env.GLOBAL_VAR_PRODUCT_NAME,
-      "Sender Name": process.env.GLOBAL_VAR_SENDER_NAME,
-      "Company Name, LLC": process.env.GLOBAL_VAR_COMPANY_NAME_LLC,
-      "Company Address": process.env.GLOBAL_VAR_COMPANY_ADDRESS,
+      "Product Name": appEnv.transactionalEmail.general.GLOBAL_VAR_PRODUCT_NAME,
+      "Sender Name": appEnv.transactionalEmail.general.GLOBAL_VAR_SENDER_NAME,
+      "Company Name, LLC": appEnv.transactionalEmail.general.GLOBAL_VAR_COMPANY_NAME_LLC,
+      "Company Address": appEnv.transactionalEmail.general.GLOBAL_VAR_COMPANY_ADDRESS,
 
     };
 

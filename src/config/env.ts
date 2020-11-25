@@ -28,10 +28,12 @@ export const appEnv = {
     },
   },
   transactionalEmail: {
+    templatesFolder: process.env.TEMPLATES_FOLDER,
     general: {
       GLOBAL_VAR_SENDER_NAME: process.env.GLOBAL_VAR_SENDER_NAME,
       GLOBAL_VAR_COMPANY_NAME_LLC: process.env.GLOBAL_VAR_COMPANY_NAME_LLC,
       GLOBAL_VAR_COMPANY_ADDRESS: process.env.GLOBAL_VAR_COMPANY_ADDRESS,
+      GLOBAL_VAR_PRODUCT_NAME: process.env.GLOBAL_VAR_PRODUCT_NAME
     },
     sendGrid: {
       SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
