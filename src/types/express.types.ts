@@ -9,6 +9,12 @@ export interface IRequestCustom extends Request {
   user?: IUser;
 }
 
+export enum EnvType {
+  Development = "Development",
+  Staging = "Staging",
+  Production = "Production"
+}
+
 export enum HttpStatusCode {
   OK = 200,
   Created = 201,

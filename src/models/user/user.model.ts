@@ -14,17 +14,18 @@ const userSchema = createSchema(
     name: Type.string(),
     role: Type.string({
       required: true,
-      default: UserRoles.regular,
+      default: UserRoles.Regular,
       enum: TypeHelper.enumToStringArray(UserRoles),
     }),
     authFlow: Type.string({
       required: true,
-      default: UserAuthFlow.basic,
+      default: UserAuthFlow.Basic,
       enum: TypeHelper.enumToStringArray(UserAuthFlow),
     }),
     email: Type.string({ required: true }),
     password: Type.string(),
     salt: Type.string(),
+    unsubscribed: Type.boolean({ default: false }),
     refreshTokens: Type.array().of({
       token: Type.string(),
     }),

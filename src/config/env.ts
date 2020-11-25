@@ -7,6 +7,7 @@ export const appEnv = {
     LANGUAGE: process.env.LANGUAGE,
     PHONE_LOCALE: process.env.PHONE_LOCALE,
     APP_URL: process.env.APP_URL,
+    API_URL: process.env.API_URL,
     ENV: process.env.ENV,
     SERVER_PORT: process.env.SERVER_PORT,
   },

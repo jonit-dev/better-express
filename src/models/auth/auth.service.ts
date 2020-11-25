@@ -21,7 +21,7 @@ export class AuthService {
   constructor(
     @inject("AuthRepository") private authRepository: AuthRepository,
     @inject("GoogleOAuthHelper") private googleOAuthHelper: GoogleOAuthHelper
-  ) {}
+  ) { }
 
   /* #############################################################|
     |  >>> BASIC JWT FLOW
@@ -148,7 +148,7 @@ export class AuthService {
       const newUser = await this.authRepository.signUp({
         name: googleUserInfo.name,
         email: googleUserInfo.email,
-        authFlow: UserAuthFlow.googleOAuth,
+        authFlow: UserAuthFlow.GoogleOAuth,
       });
 
       return await newUser.generateAccessToken();

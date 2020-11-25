@@ -5,6 +5,7 @@ import cors from "cors";
 import { InversifyExpressServer } from "inversify-express-utils";
 import morgan from "morgan";
 
+import { TransactionalEmail } from "../emails/TransactionalEmail";
 import { appEnv } from "./config/env";
 import { container } from "./config/inversify";
 import { MongoDBHelper } from "./libs/mongo.helper";
@@ -41,6 +42,13 @@ app.listen(port, async () => {
     language: appEnv.general.LANGUAGE!,
     phoneLocale: appEnv.general.PHONE_LOCALE!,
   });
+
+  await TransactionalEmail.smartSend("jfurtado141@gmail.com", "jfurtado141@gmail.com", "Hello World!", "<h1>Testing 123</h1>", "Testing 123");
+
+
+
+
+
 });
 
 app.use(errorHandlerMiddleware); // global error handling middleware must be the last one in order
