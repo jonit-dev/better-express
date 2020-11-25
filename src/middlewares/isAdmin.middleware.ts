@@ -7,7 +7,7 @@ export const isAdminMiddleware = (req: IRequestCustom, res, next): void => {
 
   const user = req.user as IUser;
 
-  if (user.role !== UserRoles.admin) {
+  if (user.role !== UserRoles.Admin) {
     throw new UnauthorizedError("Only admins can access this resource!");
   } else {
     next();
