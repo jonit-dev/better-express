@@ -20,7 +20,7 @@ export class UserController implements interfaces.Controller {
   }
 
   @httpGet("/unsubscribe")
-  private async unsubscribeUser(@queryParam("hashEmail") hashEmail: string, req: Request, res: Response): any {
+  private async unsubscribeUser(@queryParam("hashEmail") hashEmail: string, req: Request, res: Response): Promise<string | Response<any>> {
 
     if (!hashEmail) {
       return res.status(500).send({
@@ -31,6 +31,7 @@ export class UserController implements interfaces.Controller {
     const email = this.encryptionHelper.decrypt(String(hashEmail));
 
     try {
+
 
       // lets try unsubscribing this user
       await this.userService.unsubscribeUser(email);
