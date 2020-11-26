@@ -81,7 +81,8 @@ export class TransactionalEmail {
           const encryptionHelper = new EncryptionHelper();
           const encryptedEmail = encryptionHelper.encrypt(to);
 
-          const htmlWithUnsubscribeLink = html.replace("[Unsubscribe Link]", `<a href="${appEnv.general.API_URL!}/unsubscribe?hashEmail=${encryptedEmail.content}&lang=${appEnv.general.LANGUAGE!}">Do you want to stop receiving these e-mails? Click here!</p>`);
+          const htmlWithUnsubscribeLink = html.replace("[Unsubscribe Link]", `<a href="${appEnv.general.API_URL!}/users/unsubscribe?hashEmail=${encryptedEmail}&lang=${appEnv.general.LANGUAGE!}">Do you want to stop receiving these e-mails? Click here!</p>`);
+
 
           const submissionStatus = await emailProvider.emailSendingFunction(
             to,

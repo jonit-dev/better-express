@@ -6,6 +6,7 @@ import express from "express";
 import { InversifyExpressServer } from "inversify-express-utils";
 import morgan from "morgan";
 
+import { TransactionalEmail } from "../emails/TransactionalEmail";
 import { appEnv } from "./config/env";
 import { container } from "./config/inversify";
 import { MongoDBHelper } from "./libs/mongo.helper";
@@ -46,3 +47,8 @@ app.listen(port, async () => {
 });
 
 app.use(errorHandlerMiddleware); // global error handling middleware must be the last one in order
+
+
+console.log("sending email");
+TransactionalEmail.send("jfurtado141@gmail.com", "Testing", "welcome");
+

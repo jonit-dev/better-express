@@ -1,6 +1,7 @@
 import { Container } from "inversify";
 
 import { ConsoleHelper } from "../libs/console.helper";
+import { EncryptionHelper } from "../libs/encryption.helper";
 import { GoogleOAuthHelper } from "../libs/googleOauth.helper";
 import { AuthController } from "../models/auth/auth.controller";
 import { AuthRepository } from "../models/auth/auth.repository";
@@ -11,6 +12,7 @@ import { UserService } from "./../models/user/user.service";
 
 const container = new Container();
 
+container.bind<EncryptionHelper>("EncryptionHelper").to(EncryptionHelper);
 container.bind<ConsoleHelper>("ConsoleHelper").to(ConsoleHelper);
 container.bind<GoogleOAuthHelper>("GoogleOAuthHelper").to(GoogleOAuthHelper);
 container.bind<AuthController>("AuthController").to(AuthController);

@@ -18,6 +18,9 @@ export const appEnv = {
     MONGO_INITDB_ROOT_USERNAME: process.env.MONGO_INITDB_ROOT_USERNAME,
     MONGO_INITDB_ROOT_PASSWORD: process.env.MONGO_INITDB_ROOT_PASSWORD,
   },
+  encryption: {
+    genericHash: process.env.GENERIC_ENCRYPTION_HASH
+  },
   authentication: {
     PASSPORT_DEFAULT_STRATEGY: process.env.PASSPORT_DEFAULT_STRATEGY,
     JWT_SECRET: process.env.JWT_SECRET,
