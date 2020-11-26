@@ -19,7 +19,7 @@ export class TransactionalEmail {
    * @param template folder name from emails/templates
    * @param customVars object containing any custom vars to replace in your template.
    */
-  public static async send(to: string | undefined, subject: string, template: string, customVars: object, from: string | undefined = appEnv.general.ADMIN_EMAIL): Promise<boolean> {
+  public static async send(to: string | undefined, subject: string, template: string, customVars?: object, from: string | undefined = appEnv.general.ADMIN_EMAIL): Promise<boolean> {
 
 
     const html = this.loadEmailTemplate(
@@ -66,7 +66,9 @@ export class TransactionalEmail {
           if ((user?.unsubscribed === true)) {
             console.log("Skipping email submission to unsubscribed user");
             return true;
+
           }
+
 
           // insert unsubscribe link into [Unsubscribe Link] tag
 
@@ -118,7 +120,7 @@ export class TransactionalEmail {
     return false;
   }
 
-  public static loadEmailTemplate(type: EmailType, template: string, customVars: object): string {
+  public static loadEmailTemplate(type: EmailType, template: string, customVars?: object): string {
     let extension;
 
     if (type === EmailType.Html) {
@@ -127,12 +129,17 @@ export class TransactionalEmail {
       extension = ".txt";
     }
 
-    const data = readFileSync(
+    const content = readFileSync(
       `${appEnv.transactionalEmail.templatesFolder}/${template}/content${extension}`,
       "utf-8"
     ).toString();
 
-    return this._replaceTemplateCustomVars(data, customVars);
+    if (customVars) {
+      return this._replaceTemplateCustomVars(content, customVars);
+    }
+
+    return content;
+
   }
 
   private static _replaceTemplateCustomVars(html: string, customVars: object): string {

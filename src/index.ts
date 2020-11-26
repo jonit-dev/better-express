@@ -43,9 +43,6 @@ app.listen(port, async () => {
   });
 
 
-
-
-
 });
 
 app.use(errorHandlerMiddleware); // global error handling middleware must be the last one in order
