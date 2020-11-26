@@ -41,5 +41,8 @@ export const appEnv = {
     sendGrid: {
       SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
     },
+    sendInBlue: {
+      SENDINBLUE_API_KEY: process.env.SENDINBLUE_API_KEY
+    }
   },
 };

@@ -31,8 +31,6 @@ export class UserController implements interfaces.Controller {
     const email = this.encryptionHelper.decrypt(String(hashEmail));
 
     try {
-
-
       // lets try unsubscribing this user
       await this.userService.unsubscribeUser(email);
 
