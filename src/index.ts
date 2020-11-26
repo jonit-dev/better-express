@@ -2,6 +2,7 @@ import "reflect-metadata";
 
 import bodyParser from "body-parser";
 import cors from "cors";
+import express from "express";
 import { InversifyExpressServer } from "inversify-express-utils";
 import morgan from "morgan";
 
@@ -10,8 +11,6 @@ import { container } from "./config/inversify";
 import { MongoDBHelper } from "./libs/mongo.helper";
 import { ServerHelper } from "./libs/server.helper";
 import { errorHandlerMiddleware } from "./middlewares/errorHandler.midleware";
-
-
 
 const server = new InversifyExpressServer(container);
 
@@ -24,6 +23,7 @@ server.setConfig((app) => {
   app.use("*", cors());
   app.use(bodyParser.json());
   app.use(morgan("dev"));
+  app.use(express.static("public"));
 });
 
 const app = server.build();
