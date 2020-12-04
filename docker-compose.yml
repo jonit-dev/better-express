@@ -1,7 +1,7 @@
 version: "3"
 services:
-  be-api:
-    container_name: be-api
+  ls-api:
+    container_name: ls-api
     restart: always
     build: .
     env_file: .env
@@ -13,13 +13,13 @@ services:
     environment:
       FORCE_COLOR: "true"
     links:
-      - be-db
+      - ls-db
     depends_on:
-      - be-db
+      - ls-db
     networks:
       - be-network
-  be-db:
-    container_name: be-db
+  ls-db:
+    container_name: ls-db
     image: mongo
     volumes:
       - ./docker_scripts/:/docker-entrypoint-initdb.d

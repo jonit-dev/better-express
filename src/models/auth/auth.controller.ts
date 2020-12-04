@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { inject } from "inversify";
-import { controller, httpGet, httpPost, interfaces, requestBody } from "inversify-express-utils";
+import { controller, httpGet, httpPost, interfaces, request, requestBody, response } from "inversify-express-utils";
 
 import { InternalServerError } from "../../errors/InternalServerError";
 import { AuthMiddleware } from "../../middlewares/auth.middleware";
@@ -55,8 +55,11 @@ export class AuthController implements interfaces.Controller {
   // JWT FLOW ========================================
 
   @httpPost("/signup", DTOValidatorMiddleware(AuthSignUpDTO))
-  public async signUp(@requestBody() authSignUpDTO): Promise<IUser> {
-    return this.authService.signUp(authSignUpDTO);
+  public async signUp(@requestBody() authSignUpDTO, @request() req, @response() res): Promise<IUser> {
+
+    const newUser = await this.authService.signUp(authSignUpDTO);
+
+    return res.status(HttpStatusCode.Created).send(newUser);
   }
 
   @httpPost("/login", DTOValidatorMiddleware(AuthLoginDTO))
